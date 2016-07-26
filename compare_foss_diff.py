@@ -117,6 +117,7 @@ def trigger_bdk_build(job_name, build_number, images):
         data=build_params
     )
     logging.warning(" Trigger status code: " + str(trigger_result.status_code))
+    logging.warning(trigger_result.text)
 
 
 if __name__ == "__main__":
