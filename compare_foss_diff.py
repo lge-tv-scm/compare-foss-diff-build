@@ -103,7 +103,8 @@ def trigger_bdk_build(job_name, build_number, images):
         Build_starfish_machine: True,
         "build_codename": build_codename,
         "region_atsc": True,
-        "extra_images": extra_images
+        "extra_images": extra_images,
+        "webos_local": "WEBOS_DISTRO_BUILD_ID=\"" + str(build_number) + "\"\nSDKMACHINE=\"i686\""
     }
 
     clean_job_name = "clean-engineering-build-second"
