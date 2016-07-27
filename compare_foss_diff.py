@@ -5,6 +5,8 @@ import logging
 import argparse
 import requests
 
+
+logging.basicConfig(format='%(levelname)-10s: %(message)s')
 jenkins_url = os.getenv("JENKINS_URL")
 if jenkins_url[-1] == "/":
     jenkins_url = jenkins_url[:-1]
@@ -37,17 +39,24 @@ def create_bom_dict(webos_bom):
 def compare_foss_bom(previous_job, previous_job_number, current_job, current_job_number, image_name="starfish-atsc-flash"):
     job_name_split = current_job.split("-")
     foss_file_name = "foss_list_{}.txt".format(job_name_split[1])
+
+    diff_modules = {}
+
     if not os.path.isfile(foss_file_name):
-        logging.error(" {}: {} isnt' created.".format(image_name, foss_file_name))
+        logging.error("{}: {} isnt' created.".format(image_name, foss_file_name))
         foss_file_name = "foss_list.txt"
-    logging.warning(" {}: {} will be used.".format(image_name, foss_file_name))
+    logging.warning("{}: {} will be used.".format(image_name, foss_file_name))
     foss_list = open(foss_file_name, 'r').read().split('\n')
-    current_job_bom = get_bom_contents(current_job, current_job_number, image_name)
-    previous_job_bom = get_bom_contents(previous_job, previous_job_number, image_name)
+    try:
+        current_job_bom = get_bom_contents(current_job, current_job_number, image_name)
+        previous_job_bom = get_bom_contents(previous_job, previous_job_number, image_name)
+    except FileNotFoundError as e:
+        logging.error("Doesn't exist " + e.filename)
+        return diff_modules
+
     current_job_bom_dict = create_bom_dict(current_job_bom)
     previous_job_bom_dict = create_bom_dict(previous_job_bom)
 
-    diff_modules = {}
     for each_module in foss_list:
         if each_module not in current_job_bom_dict.keys():
             logging.warning("Remove " + each_module + " from foss list")
@@ -78,9 +87,9 @@ def trigger_bdk_build(job_name, build_number, images):
     job_name_split = job_name.split("-")
     build_machine = job_name_split[3]
     build_branch = job_name_split[1]
-    logging.warning(" Build machine: " + build_machine)
-    logging.warning(" Branch: " + build_branch)
-    logging.warning(" Build image: " + str(images))
+    logging.warning("Build machine: " + build_machine)
+    logging.warning("Branch: " + build_branch)
+    logging.warning("Build image: " + str(images))
 
     build_starfish_commit = "builds/{}/{}".format(build_branch, build_number)
     r = subprocess.check_output("git ls-remote {} {}".format(build_repo_url, build_starfish_commit), shell=True)
@@ -112,15 +121,15 @@ def trigger_bdk_build(job_name, build_number, images):
     else:
         clean_job_name = "clean-engineering-build"
     job_build_url = jenkins_url + "/job/" + clean_job_name + "/buildWithParameters"
-    logging.warning(" " + job_build_url)
-    logging.warning(" Build parameters:")
+    logging.warning(job_build_url)
+    logging.warning("Build parameters:")
     logging.warning("   " + str(build_params))
-    logging.warning(" Trigger a clean engineering build for starfish-bdk")
+    logging.warning("Trigger a clean engineering build for starfish-bdk")
     trigger_result = requests.post(
         job_build_url,
         data=build_params
     )
-    logging.warning(" Trigger status code: " + str(trigger_result.status_code))
+    logging.warning("Trigger status code: " + str(trigger_result.status_code))
     logging.warning(trigger_result.text)
 
 
@@ -143,11 +152,11 @@ if __name__ == "__main__":
     for build_image in image_names:
         compare_result = compare_foss_bom(job_name, build_number - 1, job_name, build_number, image_name=build_image)
         if len(compare_result) != 0:
-            logging.warning(" " + build_image)
-            logging.warning(" " + str(compare_result))
+            logging.warning(build_image)
+            logging.warning(str(compare_result))
             extra_images.append(build_image)
             break
     if len(extra_images) != 0:
         trigger_bdk_build(job_name, build_number, extra_images)
     else:
-        logging.warning(" No foss change in {}'s build number {}".format(job_name, build_number))
+        logging.warning("No foss change in {}'s build number {}".format(job_name, build_number))
