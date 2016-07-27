@@ -107,7 +107,10 @@ def trigger_bdk_build(job_name, build_number, images):
         "webos_local": "WEBOS_DISTRO_BUILD_ID=\"" + str(build_number) + "\"\nSDKMACHINE=\"i686\""
     }
 
-    clean_job_name = "clean-engineering-build-second"
+    if build_machine in ['m16', 'm16p', 'm2r', 'k3l', 'k3lp']:
+        clean_job_name = "clean-engineering-build-second"
+    else:
+        clean_job_name = "clean-engineering-build"
     job_build_url = jenkins_url + "/job/" + clean_job_name + "/buildWithParameters"
     logging.warning(" " + job_build_url)
     logging.warning(" Build parameters:")
