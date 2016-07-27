@@ -5,9 +5,6 @@ node('master_pipeline') {
    def job_name_arr = job_name.tokenize('-')
    def branch_name  = job_name_arr[1]
    def machine_name = job_name_arr[3]
-   checkout([$class: 'GitSCM', branches: [[name: 'master']],
-     userRemoteConfigs: [[url: 'http://mod.lge.com/hub/tv_scm_tool/compare_foss_diff.git']], directory: 'test'])
-    echo checkout
 
    stage 'Call a clean engineering build'
    //clean-engineering-starfish-m16-build
