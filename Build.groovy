@@ -7,7 +7,7 @@ node('master_pipeline') {
    def machine_name = job_name_arr[3]
 
    stage 'Check foss change'
-   def compare_result = "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER}".execute().text 
+   def compare_result = sh "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER}"
    echo "test-previous"
    echo compare_result
    echo "test"
