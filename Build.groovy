@@ -9,16 +9,13 @@ node('master_pipeline') {
 
    stage 'Check foss change'
    sh "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER} > compare_result"
-    sh 'ls -al'
    sh "cat compare_result"
    def compare_result = readFile 'compare_result'
-   echo "BOM Change: " + compare_result
+   echo "FOSS Change: " + compare_result
    if ( compare_result == "CHANGED\n" ) {
        stage 'Call a clean engineering build'
-       //clean-engineering-starfish-m16-build
        echo 'Clean Build'
        def clean_job_name = "clean-engineering-starfish-" + machine_name + "-build"
-    /*
        join = parallel([clean: {
             node('verification'){
                 build job:clean_job_name, parameters: [
@@ -41,9 +38,10 @@ node('master_pipeline') {
 
         def clean_build_result = join.clean.result
         def clean_build_number = join.clean.number.toString()
-        */
+/*
         def clean_build_result = "${CLEAN_BUILD_RESULT}"
         def clean_build_number = "${CLEAN_BUILD_NUMBER}"
+*/
         stage 'Copy bdk result'
         node('verification'){
             def bdk_job_name = "starfish-bdk"
