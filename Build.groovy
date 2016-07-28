@@ -22,7 +22,7 @@ node('master_pipeline') {
                     [$class: 'StringParameterValue',  name:'build_codename',        value:branch_name],
                     [$class: 'StringParameterValue',  name:'token',                 value:'trigger_clean_build'],
                     [$class: 'StringParameterValue',  name:'extra_images',          value:'starfish-bdk'],
-                    [$class: 'StringParameterValue',  name:'build_starfish_commit', value:'@drd4tv'],
+                    [$class: 'StringParameterValue',  name:'build_starfish_commit', value:'@' + branch_name],
                     [$class: 'TextParameterValue',    name:'webos_local',           value:'WEBOS_DISTRO_BUILD_ID="318"\nSDKMACHINE="i686"'],
                     [$class: 'StringParameterValue',  name:'Build_summary',         value:'test bdk build'],
                     [$class: 'BooleanParameterValue', name:'Build_starfish_m16p',   value:true],
