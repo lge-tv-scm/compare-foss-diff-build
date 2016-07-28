@@ -23,6 +23,7 @@ node('master_pipeline') {
        stage 'Call a clean engineering build'
        echo 'Clean Build'
        def clean_job_name = "clean-engineering-starfish-" + machine_name + "-build"
+       def build_starfish_machine = "Build_starfish_" + machine_name
        join = parallel([clean: {
             node('verification'){
                 build job:clean_job_name, parameters: [
@@ -32,7 +33,7 @@ node('master_pipeline') {
                     [$class: 'StringParameterValue',  name:'build_starfish_commit', value:'@' + branch_name],
                     [$class: 'TextParameterValue',    name:'webos_local',           value:'WEBOS_DISTRO_BUILD_ID="318"\nSDKMACHINE="i686"'],
                     [$class: 'StringParameterValue',  name:'Build_summary',         value:'test bdk build'],
-                    [$class: 'BooleanParameterValue', name:'Build_starfish_m16p',   value:true],
+                    [$class: 'BooleanParameterValue', name:build_starfish_machine,  value:true],
                     [$class: 'BooleanParameterValue', name:'region_default',        value:false],
                     [$class: 'BooleanParameterValue', name:'region_atsc',           value:false],
                     [$class: 'BooleanParameterValue', name:'region_arib',           value:false],
