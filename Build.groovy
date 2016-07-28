@@ -8,6 +8,7 @@ node('master_pipeline') {
 
    stage 'Check foss change'
    sh "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER} > compare_result"
+    sh 'ls -al'
    sh "cat compare_result"
    def compare_result = readFile 'compare_result'
    echo "test-previous"
