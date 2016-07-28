@@ -12,9 +12,7 @@ node('master_pipeline') {
     sh 'ls -al'
    sh "cat compare_result"
    def compare_result = readFile 'compare_result'
-   echo "test-previous"
-   echo compare_result.toString()
-   echo "test"
+   echo "BOM Change: " + compare_result
    if ( compare_result == "CHANGED\n" ) {
        stage 'Call a clean engineering build'
        //clean-engineering-starfish-m16-build
