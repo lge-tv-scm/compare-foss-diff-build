@@ -9,7 +9,7 @@ node('master_pipeline') {
    stage 'Check foss change'
    def compare_result = sh "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER}"
    echo "test-previous"
-   echo compare_result
+   echo compare_result.toString()
    echo "test"
    if ( compare_result == "CHANGED" ) {
        stage 'Call a clean engineering build'
