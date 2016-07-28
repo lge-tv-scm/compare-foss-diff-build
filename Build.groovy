@@ -5,6 +5,7 @@ node('master_pipeline') {
    def job_name_arr = job_name.tokenize('-')
    def branch_name  = job_name_arr[1]
    def machine_name = job_name_arr[3]
+   git branch: 'dev', url: 'http://mod.lge.com/hub/tv_scm_tool/compare_foss_diff.git'
 
    stage 'Check foss change'
    sh "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER} > compare_result"
