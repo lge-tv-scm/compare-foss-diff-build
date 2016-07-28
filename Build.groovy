@@ -15,7 +15,7 @@ node('master_pipeline') {
    echo "test-previous"
    echo compare_result.toString()
    echo "test"
-   if ( compare_result == "CHANGED" ) {
+   if ( compare_result == "CHANGED\n" ) {
        stage 'Call a clean engineering build'
        //clean-engineering-starfish-m16-build
        echo 'Clean Build'
