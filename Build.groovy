@@ -7,7 +7,8 @@ node('master_pipeline') {
    def machine_name = job_name_arr[3]
 
    stage 'Check foss change'
-   if ( "${CLEAN_BUILD_RESULT}" == "SUCCESS" ) {
+   def compare_result = "python compare_foss_diff.py --jobname ${BUILD_JOB_NAME} --buildnumber ${BUILD_JOB_NUMBER}" 
+   if ( compare_result == "CHANGED" ) {
        stage 'Call a clean engineering build'
        //clean-engineering-starfish-m16-build
        echo 'Clean Build'
