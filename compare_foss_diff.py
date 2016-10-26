@@ -157,6 +157,6 @@ if __name__ == "__main__":
             extra_images.append(build_image)
             break
     if len(extra_images) != 0:
-        trigger_bdk_build(job_name, build_number, extra_images)
+        print("CHANGED")
     else:
         logging.warning("No foss change in {}'s build number {}".format(job_name, build_number))
